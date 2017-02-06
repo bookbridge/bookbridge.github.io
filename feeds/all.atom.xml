@@ -1,3 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-02T00:00:00+09:00</updated><entry><title>hello pelican</title><link href="https://bookbridge.github.io/hello-pelican.html" rel="alternate"></link><published>2017-02-02T00:00:00+09:00</published><updated>2017-02-02T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-02:/hello-pelican.html</id><summary type="html">&lt;p&gt;This is first post&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Hello pelican&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-06T00:00:00+09:00</updated><entry><title>PelicanのテーマをFlexに変更する</title><link href="https://bookbridge.github.io/pelicannotemawoflexnibian-geng-suru.html" rel="alternate"></link><published>2017-02-06T00:00:00+09:00</published><updated>2017-02-06T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-06:/pelicannotemawoflexnibian-geng-suru.html</id><summary type="html">&lt;p&gt;PelicanのテーマをFlexに変更する手順&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Flexの導入&lt;/h1&gt;
+&lt;h2&gt;ダウンロード&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nf"&gt;%git&lt;/span&gt; &lt;span class="n"&gt;clone&lt;/span&gt; &lt;span class="nl"&gt;https&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="c1"&gt;//github.com/alexandrevicenzi/Flex.git ~/themes/flex&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;必要に応じてプロジェクトサイトにthemes/をコピーする。&lt;/p&gt;
+&lt;h2&gt;インストール&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;% pelican-themes -i themes/flex&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;pelicanconf.pyに以下を追記&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;THEME = &amp;#39;themes/flex&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;でThemeが適用されていることを確認出来ればOK&lt;/p&gt;
+&lt;h1&gt;設定&lt;/h1&gt;</content><category term="pelican"></category><category term="flex"></category></entry><entry><title>hello pelican</title><link href="https://bookbridge.github.io/hello-pelican.html" rel="alternate"></link><published>2017-02-02T00:00:00+09:00</published><updated>2017-02-02T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-02:/hello-pelican.html</id><summary type="html">&lt;p&gt;This is first post&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Hello pelican&lt;/h1&gt;
 &lt;p&gt;This is my first Github pages document. Hello world.&lt;/p&gt;</content><category term="pelican"></category></entry></feed>
