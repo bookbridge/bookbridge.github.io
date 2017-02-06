@@ -26,7 +26,7 @@
 &lt;p&gt;pelicanconf.py(抜粋)&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;AUTHOR = &amp;#39;bookbridge&amp;#39;
 SITENAME = &amp;#39;bookbridge.github.io&amp;#39;
-SITEURL = &amp;#39;&amp;#39;
+SITEURL = &amp;#39;https://bookbridge.github.io&amp;#39;
 SITESUBTITLE = &amp;#39;From Silicon to Clouds&amp;#39;
 SITEDESCRIPTION = &amp;#39;Thoughts and Writings&amp;#39;
 
