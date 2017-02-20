@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io - tech</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/tech.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-06T00:00:00+09:00</updated><entry><title>PelicanのテーマをFlexに変更する</title><link href="https://bookbridge.github.io/pelicannotemawoflexnibian-geng-suru.html" rel="alternate"></link><published>2017-02-06T00:00:00+09:00</published><updated>2017-02-06T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-06:/pelicannotemawoflexnibian-geng-suru.html</id><summary type="html">&lt;p&gt;PelicanのテーマをFlexに変更する手順&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Flexの導入&lt;/h1&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io - tech</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/tech.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-21T00:00:00+09:00</updated><entry><title>はてなブックマークのline botをpythonで作る</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru.html" rel="alternate"></link><published>2017-02-21T00:00:00+09:00</published><updated>2017-02-21T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-21:/hatenabutsukumakunoline-botwopythondezuo-ru.html</id><summary type="html">&lt;p&gt;まずはサンプルを動かすところまで&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Line Developersに登録&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Webhookを有効にしておく&lt;/li&gt;
+&lt;li&gt;Channel secretとChannel access tokenをメモる&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Line command line sdkをインストール&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install line-bot-sdk
+$ git clone https://github.com/line/line-bot-sdk-python.git
+$ &lt;span class="nb"&gt;cd&lt;/span&gt; example/flask-echo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Heroku SDKをインストール&lt;/h2&gt;
+&lt;p&gt;https://devcenter.heroku.com/articles/heroku-cli&lt;/p&gt;
+&lt;h2&gt;gunicornをインストール&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ pip install gunicorn
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Procfileを作成&lt;/h2&gt;
+&lt;p&gt;Procfile&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;web&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;gunicorn&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;file&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Herokuにコミットする&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git init
+$ heroku create
+$ git add --all
+$ git commit -m &lt;span class="sb"&gt;`&lt;/span&gt;first commit&lt;span class="err"&gt;&amp;#39;&lt;/span&gt;
+$ git push heroku master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;環境変数の設定&lt;/h2&gt;
+&lt;p&gt;herokuで環境変数を節制するには以下の様にする。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ heroku config:set &lt;span class="nv"&gt;LINE_CHANNEL_SECRET&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;YOUR CHANNEL SECRET&amp;gt;
+$ heroku config:set &lt;span class="nv"&gt;LINE_CHANNEL_ACCESS_TOKEN&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&amp;lt;YOUR  TOKEN&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;メッセージ送信してみる&lt;/h2&gt;
+&lt;p&gt;lineでbotを友達に追加し、メッセージ送信してみる。
+送信したメッセージがオウム返しで帰ってきたら正常動作です。&lt;/p&gt;</content><category term="heroku"></category><category term="line-bot"></category><category term="flask"></category></entry><entry><title>PelicanのテーマをFlexに変更する</title><link href="https://bookbridge.github.io/pelicannotemawoflexnibian-geng-suru.html" rel="alternate"></link><published>2017-02-06T00:00:00+09:00</published><updated>2017-02-06T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-06:/pelicannotemawoflexnibian-geng-suru.html</id><summary type="html">&lt;p&gt;PelicanのテーマをFlexに変更する手順&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Flexの導入&lt;/h1&gt;
 &lt;h2&gt;ダウンロード&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c"&gt;% git clone https://github.com/alexandrevicenzi/Flex.git ~/themes/flex&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;

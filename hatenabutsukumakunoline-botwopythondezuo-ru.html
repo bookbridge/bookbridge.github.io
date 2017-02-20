@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/pygments/xcode.min.css">
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://bookbridge.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="bookbridge.github.io Atom">
+
+
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="bookbridge" />
+<meta name="description" content="まずはサンプルを動かすところまで" />
+<meta name="keywords" content="heroku, line-bot, flask">
+<meta property="og:site_name" content="bookbridge.github.io"/>
+<meta property="og:title" content="はてなブックマークのline botをpythonで作る"/>
+<meta property="og:description" content="まずはサンプルを動かすところまで"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-02-21 00:00:00+09:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://bookbridge.github.io/author/bookbridge.html">
+<meta property="article:section" content="tech"/>
+<meta property="article:tag" content="heroku"/>
+<meta property="article:tag" content="line-bot"/>
+<meta property="article:tag" content="flask"/>
+<meta property="og:image" content="https://bookbridge.github.io/images/profile.jpg">
+
+  <title>bookbridge.github.io &ndash; はてなブックマークのline botをpythonで作る</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://bookbridge.github.io">
+        <img src="https://bookbridge.github.io/images/profile.jpg" alt="bookbridge.github.io" title="bookbridge.github.io">
+      </a>
+      <h1><a href="https://bookbridge.github.io">bookbridge.github.io</a></h1>
+
+<p>From Silicon to Clouds</p>
+      <nav>
+        <ul class="list">
+
+          <li><a href="" target="_blank">about</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/yuichi-motohashi-299960104" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/bookbridge" target="_blank"><i class="fa fa-github"></i></a></li>
+        <li><a class="sc-google" href="" target="_blank"><i class="fa fa-google"></i></a></li>
+        <li><a class="sc-twitter" href="https://twitter.com/bookbridge" target="_blank"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="sc-rss" href="//bookbridge.github.io/feeds/all.atom.xml" target="_blank"><i class="fa fa-rss"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://bookbridge.github.io">    Home
+</a>
+
+
+      <a href="https://bookbridge.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+    <h1 id="hatenabutsukumakunoline-botwopythondezuo-ru">はてなブックマークのline botをpythonで作る</h1>
+    <p>
+          Posted on Tue 21 February 2017 in <a href="https://bookbridge.github.io/category/tech.html">tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>Line Developersに登録</h2>
+<ul>
+<li>Webhookを有効にしておく</li>
+<li>Channel secretとChannel access tokenをメモる</li>
+</ul>
+<h2>Line command line sdkをインストール</h2>
+<div class="highlight"><pre><span></span>$ pip install line-bot-sdk
+$ git clone https://github.com/line/line-bot-sdk-python.git
+$ <span class="nb">cd</span> example/flask-echo
+</pre></div>
+
+
+<h2>Heroku SDKをインストール</h2>
+<p>https://devcenter.heroku.com/articles/heroku-cli</p>
+<h2>gunicornをインストール</h2>
+<div class="highlight"><pre><span></span>$ pip install gunicorn
+</pre></div>
+
+
+<h2>Procfileを作成</h2>
+<p>Procfile</p>
+<div class="highlight"><pre><span></span><span class="n">web</span><span class="o">:</span> <span class="n">gunicorn</span> <span class="n">app</span><span class="o">:</span><span class="n">app</span> <span class="o">--</span><span class="n">log</span><span class="o">-</span><span class="n">file</span> <span class="o">-</span>
+</pre></div>
+
+
+<h2>Herokuにコミットする</h2>
+<div class="highlight"><pre><span></span>$ git init
+$ heroku create
+$ git add --all
+$ git commit -m <span class="sb">`</span>first commit<span class="err">&#39;</span>
+$ git push heroku master
+</pre></div>
+
+
+<h2>環境変数の設定</h2>
+<p>herokuで環境変数を節制するには以下の様にする。</p>
+<div class="highlight"><pre><span></span>$ heroku config:set <span class="nv">LINE_CHANNEL_SECRET</span><span class="o">=</span>&lt;YOUR CHANNEL SECRET&gt;
+$ heroku config:set <span class="nv">LINE_CHANNEL_ACCESS_TOKEN</span><span class="o">=</span>&lt;YOUR  TOKEN&gt;
+</pre></div>
+
+
+<h2>メッセージ送信してみる</h2>
+<p>lineでbotを友達に追加し、メッセージ送信してみる。
+送信したメッセージがオウム返しで帰ってきたら正常動作です。</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://bookbridge.github.io/tag/heroku.html">heroku</a>
+      <a href="https://bookbridge.github.io/tag/line-bot.html">line-bot</a>
+      <a href="https://bookbridge.github.io/tag/flask.html">flask</a>
+    </p>
+  </div>
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy; bookbridge 2016</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " bookbridge.github.io ",
+  "url" : "https://bookbridge.github.io",
+  "image": "https://bookbridge.github.io/images/profile.jpg",
+  "description": "Thoughts and Writings"
+}
+</script>
+</body>
+</html>
