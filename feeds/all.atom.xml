@@ -1,5 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-21T00:00:00+09:00</updated><entry><title>はてなブックマークのline botをpythonで作る</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru.html" rel="alternate"></link><published>2017-02-21T00:00:00+09:00</published><updated>2017-02-21T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-21:/hatenabutsukumakunoline-botwopythondezuo-ru.html</id><summary type="html">&lt;p&gt;まずはサンプルを動かすところまで&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Line Developersに登録&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-26T00:00:00+09:00</updated><entry><title>はてなブックマークのline botをpythonで作る (2)</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru-2.html" rel="alternate"></link><published>2017-02-26T00:00:00+09:00</published><updated>2017-02-26T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-26:/hatenabutsukumakunoline-botwopythondezuo-ru-2.html</id><summary type="html">&lt;p&gt;はてブの人気エントリーを返してくれるようにコードを修正します。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;サンプルのapp.pyを修正&lt;/h2&gt;
+&lt;p&gt;サンプルのapp.pyを修正する。テキストメッセージを送付した場合の処理を追加していくので、&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;@handler.add(MessageEvent, message=TextMessage)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;でデコレートされた関数を適宜修正していけば良い。
+今回は&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;"all"を送信した場合、前カテゴリから人気エントリを検索して返す&lt;/li&gt;
+&lt;li&gt;カテゴリに相当する単語(social, it, economicsなど)を送付した場合、カテゴリー別の人気エントリーを検索して返す&lt;/li&gt;
+&lt;li&gt;その他の単語を送付した場合、その単語で検索した結果を返す&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;という仕様とした。&lt;/p&gt;
+&lt;h2&gt;Carouselを作る&lt;/h2&gt;
+&lt;p&gt;今回はcarouselと呼ばれる、横並びに記事が表示されるような形式でエントリを表示することにする。carouselを作成する部分は以下の様な感じ。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;def make_carousel(url):
+    rss = feedparser.parse(url)
+    bookmark_num_url = &amp;quot;http://api.b.st-hatena.com/entry.count?url=&amp;quot;
+    carousel_template = CarouselTemplate(columns=[
+        CarouselColumn(
+            thumbnail_image_url=BeautifulSoup(
+                rss.entries[0].content[0][&amp;quot;value&amp;quot;], &amp;quot;html.parser&amp;quot;)
+            .find_all(&amp;quot;img&amp;quot;)[1][&amp;quot;src&amp;quot;].replace(&amp;quot;http&amp;quot;, &amp;quot;https&amp;quot;),
+            text=rss.entries[0].summary[:60],
+            title=rss.entries[0].title[:40],
+            actions=[
+                URITemplateAction(
+                    label=&amp;#39;Go to this page&amp;#39;,
+                    uri=rss.entries[0].link),
+                URITemplateAction(
+                    label=requests.get(
+                        bookmark_num_url
+                        + rss.entries[0].link).text + &amp;quot; bookmarks&amp;quot;,
+                    uri=&amp;quot;http://b.hatena.ne.jp/entry/&amp;quot; + rss.entries[0].link,
+                )]),
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;caoursel_templateにCarouselColumnを追加していく。サムネイルの画像は取ってきたrssからBeautifulSoupでスクレイピングして表示するようにする。&lt;em&gt;httpsで画像を配信する必要があるので、uriのhttpをhttpsに書き換えておく。&lt;/em&gt; はてなのcdnはこれでうまくいく感じだが、うまくいかない場合も当然あると思われる。&lt;/p&gt;
+&lt;p&gt;あとはブックマークページとブックマーク数もAPIから取ってきてURITemplateActionと呼ばれる形式に代入しておけば表示される。&lt;/p&gt;
+&lt;p&gt;&lt;img src=https://lh3.googleusercontent.com/p6406WJEc78whmHNZ3sDiFaFQvYJr7utv5S7mcK1E0F2-YdxOyK5MX0xPha0GcsUc-gOEWrRCbNgGb5amni9w0z8IRdaU1izpgK5bJI1FnZBjeKhWP_jrMl04WwGy11dQF55V43XlJhJ2q_J9HMA5dOe0tocYfQB25gCCJ8fsF3H9Sm6gDTtlogP5saK9GPDTw0hmTyMwjekTAVYa6xzH7QCiihLdFhWq4alSaDxk1eN1ujRp0kq4lLCKtvWOqnKbhUJmKwzr_isKP30HLqVJHNIpAz7LOOeRyJUB4RFyDGiz0c0WWIzfyWXX10tCjWbH1SLr8oREaEgoKsR2Gt5loYD_yUVpmIwIpkEy8-KvlDEO5--km_WIndL2kQPqdjXcHA8293LSrcr1cYWi53vHIETkZlquSDpJPkZ_bLUytnz0_asT0mkB9B3BNIdZ4rBoMzqj5wJh7kTOuyDrs61uJ-WFQ0YAm4DlXDhlTcO-U_Re76iSz0FHShLEBzn4mcMbE3m_b8Ywf6WY9uRlYVo9AiTXGXsyhiMaJcSOgO9oqp6zljAzBryA8nCoi6AwPpt47BXv_wlH1lFiQGmFrzDxJFmbRXV_CBEygo85OR-iCMI71NRVfDW7A=w750-h1334-no width=320px&gt;&lt;/p&gt;
+&lt;p&gt;こんな感じで。&lt;/p&gt;</content><category term="heroku"></category><category term="line-bot"></category><category term="flask"></category></entry><entry><title>はてなブックマークのline botをpythonで作る (1)</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru-1.html" rel="alternate"></link><published>2017-02-21T00:00:00+09:00</published><updated>2017-02-21T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-21:/hatenabutsukumakunoline-botwopythondezuo-ru-1.html</id><summary type="html">&lt;p&gt;まずはサンプルを動かすところまで&lt;/p&gt;</summary><content type="html">&lt;h2&gt;前提&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;python 3.6.0&lt;/li&gt;
+&lt;li&gt;Flask==0.12&lt;/li&gt;
+&lt;li&gt;line-bot-sdk==1.1.0&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Line Developersに登録&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Webhookを有効にしておく&lt;/li&gt;
 &lt;li&gt;Channel secretとChannel access tokenをメモる&lt;/li&gt;

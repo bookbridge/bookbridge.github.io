@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/pygments/xcode.min.css">
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://bookbridge.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="bookbridge.github.io Atom">
+
+
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="bookbridge" />
+<meta name="description" content="はてブの人気エントリーを返してくれるようにコードを修正します。" />
+<meta name="keywords" content="heroku, line-bot, flask">
+<meta property="og:site_name" content="bookbridge.github.io"/>
+<meta property="og:title" content="はてなブックマークのline botをpythonで作る (2)"/>
+<meta property="og:description" content="はてブの人気エントリーを返してくれるようにコードを修正します。"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru-2.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-02-26 00:00:00+09:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://bookbridge.github.io/author/bookbridge.html">
+<meta property="article:section" content="tech"/>
+<meta property="article:tag" content="heroku"/>
+<meta property="article:tag" content="line-bot"/>
+<meta property="article:tag" content="flask"/>
+<meta property="og:image" content="https://bookbridge.github.io/images/profile.jpg">
+
+  <title>bookbridge.github.io &ndash; はてなブックマークのline botをpythonで作る (2)</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://bookbridge.github.io">
+        <img src="https://bookbridge.github.io/images/profile.jpg" alt="bookbridge.github.io" title="bookbridge.github.io">
+      </a>
+      <h1><a href="https://bookbridge.github.io">bookbridge.github.io</a></h1>
+
+<p>From Silicon to Clouds</p>
+      <nav>
+        <ul class="list">
+
+          <li><a href="" target="_blank">about</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/yuichi-motohashi-299960104" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/bookbridge" target="_blank"><i class="fa fa-github"></i></a></li>
+        <li><a class="sc-google" href="" target="_blank"><i class="fa fa-google"></i></a></li>
+        <li><a class="sc-twitter" href="https://twitter.com/bookbridge" target="_blank"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="sc-rss" href="//bookbridge.github.io/feeds/all.atom.xml" target="_blank"><i class="fa fa-rss"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://bookbridge.github.io">    Home
+</a>
+
+
+      <a href="https://bookbridge.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+    <h1 id="hatenabutsukumakunoline-botwopythondezuo-ru-2">はてなブックマークのline botをpythonで作る (2)</h1>
+    <p>
+          Posted on Sun 26 February 2017 in <a href="https://bookbridge.github.io/category/tech.html">tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>サンプルのapp.pyを修正</h2>
+<p>サンプルのapp.pyを修正する。テキストメッセージを送付した場合の処理を追加していくので、</p>
+<div class="highlight"><pre><span></span>@handler.add(MessageEvent, message=TextMessage)
+</pre></div>
+
+
+<p>でデコレートされた関数を適宜修正していけば良い。
+今回は</p>
+<ul>
+<li>"all"を送信した場合、前カテゴリから人気エントリを検索して返す</li>
+<li>カテゴリに相当する単語(social, it, economicsなど)を送付した場合、カテゴリー別の人気エントリーを検索して返す</li>
+<li>その他の単語を送付した場合、その単語で検索した結果を返す</li>
+</ul>
+<p>という仕様とした。</p>
+<h2>Carouselを作る</h2>
+<p>今回はcarouselと呼ばれる、横並びに記事が表示されるような形式でエントリを表示することにする。carouselを作成する部分は以下の様な感じ。</p>
+<div class="highlight"><pre><span></span>def make_carousel(url):
+    rss = feedparser.parse(url)
+    bookmark_num_url = &quot;http://api.b.st-hatena.com/entry.count?url=&quot;
+    carousel_template = CarouselTemplate(columns=[
+        CarouselColumn(
+            thumbnail_image_url=BeautifulSoup(
+                rss.entries[0].content[0][&quot;value&quot;], &quot;html.parser&quot;)
+            .find_all(&quot;img&quot;)[1][&quot;src&quot;].replace(&quot;http&quot;, &quot;https&quot;),
+            text=rss.entries[0].summary[:60],
+            title=rss.entries[0].title[:40],
+            actions=[
+                URITemplateAction(
+                    label=&#39;Go to this page&#39;,
+                    uri=rss.entries[0].link),
+                URITemplateAction(
+                    label=requests.get(
+                        bookmark_num_url
+                        + rss.entries[0].link).text + &quot; bookmarks&quot;,
+                    uri=&quot;http://b.hatena.ne.jp/entry/&quot; + rss.entries[0].link,
+                )]),
+</pre></div>
+
+
+<p>caoursel_templateにCarouselColumnを追加していく。サムネイルの画像は取ってきたrssからBeautifulSoupでスクレイピングして表示するようにする。<em>httpsで画像を配信する必要があるので、uriのhttpをhttpsに書き換えておく。</em> はてなのcdnはこれでうまくいく感じだが、うまくいかない場合も当然あると思われる。</p>
+<p>あとはブックマークページとブックマーク数もAPIから取ってきてURITemplateActionと呼ばれる形式に代入しておけば表示される。</p>
+<p><img src=https://lh3.googleusercontent.com/p6406WJEc78whmHNZ3sDiFaFQvYJr7utv5S7mcK1E0F2-YdxOyK5MX0xPha0GcsUc-gOEWrRCbNgGb5amni9w0z8IRdaU1izpgK5bJI1FnZBjeKhWP_jrMl04WwGy11dQF55V43XlJhJ2q_J9HMA5dOe0tocYfQB25gCCJ8fsF3H9Sm6gDTtlogP5saK9GPDTw0hmTyMwjekTAVYa6xzH7QCiihLdFhWq4alSaDxk1eN1ujRp0kq4lLCKtvWOqnKbhUJmKwzr_isKP30HLqVJHNIpAz7LOOeRyJUB4RFyDGiz0c0WWIzfyWXX10tCjWbH1SLr8oREaEgoKsR2Gt5loYD_yUVpmIwIpkEy8-KvlDEO5--km_WIndL2kQPqdjXcHA8293LSrcr1cYWi53vHIETkZlquSDpJPkZ_bLUytnz0_asT0mkB9B3BNIdZ4rBoMzqj5wJh7kTOuyDrs61uJ-WFQ0YAm4DlXDhlTcO-U_Re76iSz0FHShLEBzn4mcMbE3m_b8Ywf6WY9uRlYVo9AiTXGXsyhiMaJcSOgO9oqp6zljAzBryA8nCoi6AwPpt47BXv_wlH1lFiQGmFrzDxJFmbRXV_CBEygo85OR-iCMI71NRVfDW7A=w750-h1334-no width=320px></p>
+<p>こんな感じで。</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://bookbridge.github.io/tag/heroku.html">heroku</a>
+      <a href="https://bookbridge.github.io/tag/line-bot.html">line-bot</a>
+      <a href="https://bookbridge.github.io/tag/flask.html">flask</a>
+    </p>
+  </div>
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy; bookbridge 2016</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " bookbridge.github.io ",
+  "url" : "https://bookbridge.github.io",
+  "image": "https://bookbridge.github.io/images/profile.jpg",
+  "description": "Thoughts and Writings"
+}
+</script>
+</body>
+</html>
