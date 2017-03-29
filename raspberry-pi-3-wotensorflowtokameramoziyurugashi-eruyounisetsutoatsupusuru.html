@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/pygments/xcode.min.css">
+  <link rel="stylesheet" type="text/css" href="https://bookbridge.github.io/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://bookbridge.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="bookbridge.github.io Atom">
+
+
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="bookbridge" />
+<meta name="description" content="Raspberry piを使って物体認識してみたくなったので、セットアップします。" />
+<meta name="keywords" content="raspberrypi, tensorflow, keras, camreamodule">
+<meta property="og:site_name" content="bookbridge.github.io"/>
+<meta property="og:title" content="Raspberry pi 3 をtensorflowとカメラモジュールが使えるようにセットアップする"/>
+<meta property="og:description" content="Raspberry piを使って物体認識してみたくなったので、セットアップします。"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://bookbridge.github.io/raspberry-pi-3-wotensorflowtokameramoziyurugashi-eruyounisetsutoatsupusuru.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-03-29 00:00:00+09:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://bookbridge.github.io/author/bookbridge.html">
+<meta property="article:section" content="tech"/>
+<meta property="article:tag" content="raspberrypi"/>
+<meta property="article:tag" content="tensorflow"/>
+<meta property="article:tag" content="keras"/>
+<meta property="article:tag" content="camreamodule"/>
+<meta property="og:image" content="https://bookbridge.github.io/images/profile.jpg">
+
+  <title>bookbridge.github.io &ndash; Raspberry pi 3 をtensorflowとカメラモジュールが使えるようにセットアップする</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://bookbridge.github.io">
+        <img src="https://bookbridge.github.io/images/profile.jpg" alt="bookbridge.github.io" title="bookbridge.github.io">
+      </a>
+      <h1><a href="https://bookbridge.github.io">bookbridge.github.io</a></h1>
+
+<p>From Silicon to Clouds</p>
+      <nav>
+        <ul class="list">
+
+          <li><a href="" target="_blank">about</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-linkedin" href="https://www.linkedin.com/in/yuichi-motohashi-299960104" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        <li><a class="sc-github" href="https://github.com/bookbridge" target="_blank"><i class="fa fa-github"></i></a></li>
+        <li><a class="sc-google" href="" target="_blank"><i class="fa fa-google"></i></a></li>
+        <li><a class="sc-twitter" href="https://twitter.com/bookbridge" target="_blank"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="sc-rss" href="//bookbridge.github.io/feeds/all.atom.xml" target="_blank"><i class="fa fa-rss"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+    <nav>
+      <a href="https://bookbridge.github.io">    Home
+</a>
+
+
+      <a href="https://bookbridge.github.io/feeds/all.atom.xml">    Atom
+</a>
+
+    </nav>
+
+<article class="single">
+  <header>
+    <h1 id="raspberry-pi-3-wotensorflowtokameramoziyurugashi-eruyounisetsutoatsupusuru">Raspberry pi 3 をtensorflowとカメラモジュールが使えるようにセットアップする</h1>
+    <p>
+          Posted on 水 29 3月 2017 in <a href="https://bookbridge.github.io/category/tech.html">tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>Raspbian jessieをダウンロード</h1>
+<p>https://www.raspberrypi.org/downloads/raspbian/</p>
+<h1>imageをSDカードに焼き込む</h1>
+<div class="highlight"><pre><span></span>$ diskutil eraseDisk FAT32 RPI /dev/disk3
+$ sudo dd <span class="nv">bs</span><span class="o">=</span>1m <span class="k">if</span><span class="o">=</span><span class="m">2016</span>-03-18-raspbian-jessie.img <span class="nv">of</span><span class="o">=</span>/dev/rdisk3
+</pre></div>
+
+
+<h1>無線LAN設定</h1>
+<p>こちらのURLを参照</p>
+<p>http://qiita.com/momotaro98/items/fa94c0ed6e9e727fe15e</p>
+<h1>いろいろアップデート</h1>
+<div class="highlight"><pre><span></span>$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get install python-dev
+$ sudo rpi-update
+</pre></div>
+
+
+<h1>sambaの設定</h1>
+<div class="highlight"><pre><span></span>$ sudo apt-get install samba
+$ sudo nano /etc/samba/smb.conf
+$ sudo update-rc.d samba defaults
+$ sudo smbpasswd -a yuichi
+</pre></div>
+
+
+<h1>Errors were encountered while processing: libpam-chksshpwd:armhf が出たら</h1>
+<div class="highlight"><pre><span></span>$ sudo rm -rf /var/lib/chksshpwd/ <span class="p">;</span> sudo apt-get install -y libpam-chksshpwd
+</pre></div>
+
+
+<h1>python3をデフォルトに</h1>
+<div class="highlight"><pre><span></span>$ <span class="nb">alias</span> <span class="nv">python</span><span class="o">=</span><span class="s1">&#39;python3&#39;</span>
+</pre></div>
+
+
+<h1>camera moduleのテスト</h1>
+<div class="highlight"><pre><span></span>$ raspistill -o test.jpg
+</pre></div>
+
+
+<p>するとエラーメッセージが。</p>
+<div class="highlight"><pre><span></span>* failed to open vchiq instance
+</pre></div>
+
+
+<p>パーミッションの問題らしい。</p>
+<div class="highlight"><pre><span></span>$ ls -l /dev/ <span class="p">|</span> grep vch
+crw-rw—T <span class="m">1</span> root video <span class="m">248</span>, <span class="m">0</span> Jan <span class="m">1</span> <span class="m">1970</span> vchiq
+</pre></div>
+
+
+<p>その他にも rw を追加</p>
+<div class="highlight"><pre><span></span>$ sudo chmod a+rw /dev/vchiq
+</pre></div>
+
+
+<p>これでraspistillコマンドで画像が取れるようになった。</p>
+<h1>picamera のインストール</h1>
+<p>既に入ってたので略</p>
+<h1>opencv3を入れる</h1>
+<p>ここからが本番。opencv3を入れる</p>
+<p><a href="http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/">こちら</a>のURLの手順に従う。</p>
+<p>途中3.1.0になっているところを最新版の3.2.0に書き換えておく。</p>
+<h1>tensorflowを入れる</h1>
+<h2>インストール</h2>
+<div class="highlight"><pre><span></span># For Python 3.4
+wget https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.0.0/tensorflow-1.0.0-cp34-cp34m-linux_armv7l.whl
+sudo pip3 install tensorflow-1.0.0-cp34-cp34m-linux_armv7l.whl
+</pre></div>
+
+
+<h2>hello worldしてみる</h2>
+<div class="highlight"><pre><span></span><span class="c1"># hello-tf.py</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+
+<span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+
+<span class="n">hello</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="s1">&#39;hello, tensorflow!&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">hello</span><span class="p">))</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+
+
+<h1>Kerasも入れる</h1>
+<div class="highlight"><pre><span></span>pip install keras
+</pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://bookbridge.github.io/tag/raspberrypi.html">raspberrypi</a>
+      <a href="https://bookbridge.github.io/tag/tensorflow.html">tensorflow</a>
+      <a href="https://bookbridge.github.io/tag/keras.html">keras</a>
+      <a href="https://bookbridge.github.io/tag/camreamodule.html">camreamodule</a>
+    </p>
+  </div>
+
+
+
+
+</article>
+
+    <footer>
+<p>&copy; bookbridge 2016</p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " bookbridge.github.io ",
+  "url" : "https://bookbridge.github.io",
+  "image": "https://bookbridge.github.io/images/profile.jpg",
+  "description": "Thoughts and Writings"
+}
+</script>
+</body>
+</html>

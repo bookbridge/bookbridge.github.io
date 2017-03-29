@@ -1,5 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-02-26T00:00:00+09:00</updated><entry><title>はてなブックマークのline botをpythonで作る (2)</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru-2.html" rel="alternate"></link><published>2017-02-26T00:00:00+09:00</published><updated>2017-02-26T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-26:/hatenabutsukumakunoline-botwopythondezuo-ru-2.html</id><summary type="html">&lt;p&gt;はてブの人気エントリーを返してくれるようにコードを修正します。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;サンプルのapp.pyを修正&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>bookbridge.github.io</title><link href="https://bookbridge.github.io/" rel="alternate"></link><link href="https://bookbridge.github.io/feeds/all.atom.xml" rel="self"></link><id>https://bookbridge.github.io/</id><updated>2017-03-29T00:00:00+09:00</updated><entry><title>Raspberry pi 3 をtensorflowとカメラモジュールが使えるようにセットアップする</title><link href="https://bookbridge.github.io/raspberry-pi-3-wotensorflowtokameramoziyurugashi-eruyounisetsutoatsupusuru.html" rel="alternate"></link><published>2017-03-29T00:00:00+09:00</published><updated>2017-03-29T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-03-29:/raspberry-pi-3-wotensorflowtokameramoziyurugashi-eruyounisetsutoatsupusuru.html</id><summary type="html">&lt;p&gt;Raspberry piを使って物体認識してみたくなったので、セットアップします。&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Raspbian jessieをダウンロード&lt;/h1&gt;
+&lt;p&gt;https://www.raspberrypi.org/downloads/raspbian/&lt;/p&gt;
+&lt;h1&gt;imageをSDカードに焼き込む&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ diskutil eraseDisk FAT32 RPI /dev/disk3
+$ sudo dd &lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1m &lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;2016&lt;/span&gt;-03-18-raspbian-jessie.img &lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/rdisk3
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;無線LAN設定&lt;/h1&gt;
+&lt;p&gt;こちらのURLを参照&lt;/p&gt;
+&lt;p&gt;http://qiita.com/momotaro98/items/fa94c0ed6e9e727fe15e&lt;/p&gt;
+&lt;h1&gt;いろいろアップデート&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get update
+$ sudo apt-get upgrade
+$ sudo apt-get install python-dev
+$ sudo rpi-update
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;sambaの設定&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get install samba
+$ sudo nano /etc/samba/smb.conf
+$ sudo update-rc.d samba defaults
+$ sudo smbpasswd -a yuichi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Errors were encountered while processing: libpam-chksshpwd:armhf が出たら&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo rm -rf /var/lib/chksshpwd/ &lt;span class="p"&gt;;&lt;/span&gt; sudo apt-get install -y libpam-chksshpwd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;python3をデフォルトに&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;alias&lt;/span&gt; &lt;span class="nv"&gt;python&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;python3&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;camera moduleのテスト&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ raspistill -o test.jpg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;するとエラーメッセージが。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;* failed to open vchiq instance
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;パーミッションの問題らしい。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ls -l /dev/ &lt;span class="p"&gt;|&lt;/span&gt; grep vch
+crw-rw—T &lt;span class="m"&gt;1&lt;/span&gt; root video &lt;span class="m"&gt;248&lt;/span&gt;, &lt;span class="m"&gt;0&lt;/span&gt; Jan &lt;span class="m"&gt;1&lt;/span&gt; &lt;span class="m"&gt;1970&lt;/span&gt; vchiq
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;その他にも rw を追加&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo chmod a+rw /dev/vchiq
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;これでraspistillコマンドで画像が取れるようになった。&lt;/p&gt;
+&lt;h1&gt;picamera のインストール&lt;/h1&gt;
+&lt;p&gt;既に入ってたので略&lt;/p&gt;
+&lt;h1&gt;opencv3を入れる&lt;/h1&gt;
+&lt;p&gt;ここからが本番。opencv3を入れる&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.pyimagesearch.com/2016/04/18/install-guide-raspberry-pi-3-raspbian-jessie-opencv-3/"&gt;こちら&lt;/a&gt;のURLの手順に従う。&lt;/p&gt;
+&lt;p&gt;途中3.1.0になっているところを最新版の3.2.0に書き換えておく。&lt;/p&gt;
+&lt;h1&gt;tensorflowを入れる&lt;/h1&gt;
+&lt;h2&gt;インストール&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# For Python 3.4
+wget https://github.com/samjabrahams/tensorflow-on-raspberry-pi/releases/download/v1.0.0/tensorflow-1.0.0-cp34-cp34m-linux_armv7l.whl
+sudo pip3 install tensorflow-1.0.0-cp34-cp34m-linux_armv7l.whl
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;hello worldしてみる&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# hello-tf.py&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;tensorflow&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;tf&lt;/span&gt;
+
+&lt;span class="n"&gt;sess&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Session&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;hello&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;constant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hello, tensorflow!&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hello&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;constant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tf&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;constant&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;32&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sess&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Kerasも入れる&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install keras
+&lt;/pre&gt;&lt;/div&gt;</content><category term="raspberrypi"></category><category term="tensorflow"></category><category term="keras"></category><category term="camreamodule"></category></entry><entry><title>はてなブックマークのline botをpythonで作る (2)</title><link href="https://bookbridge.github.io/hatenabutsukumakunoline-botwopythondezuo-ru-2.html" rel="alternate"></link><published>2017-02-26T00:00:00+09:00</published><updated>2017-02-26T00:00:00+09:00</updated><author><name>bookbridge</name></author><id>tag:bookbridge.github.io,2017-02-26:/hatenabutsukumakunoline-botwopythondezuo-ru-2.html</id><summary type="html">&lt;p&gt;はてブの人気エントリーを返してくれるようにコードを修正します。&lt;/p&gt;</summary><content type="html">&lt;h2&gt;サンプルのapp.pyを修正&lt;/h2&gt;
 &lt;p&gt;サンプルのapp.pyを修正する。テキストメッセージを送付した場合の処理を追加していくので、&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;@handler.add(MessageEvent, message=TextMessage)
 &lt;/pre&gt;&lt;/div&gt;
